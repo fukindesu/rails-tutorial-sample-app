@@ -171,3 +171,21 @@ input {
     color: $state-danger-text;
   }
 }
+
+.checkbox {
+  display: inline-block;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  span {
+    margin-left: 20px;
+    font-weight: normal;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+#session_remember_me {
+  width: auto;
+  margin-left: 0;
+}
