@@ -3,6 +3,7 @@ require "test_helper"
 class UsersSignupTest < ActionDispatch::IntegrationTest
   def setup
     ActionMailer::Base.deliveries.clear
+    @activated_user = users(:michael)
   end
 
   test 'invalid signup information' do
@@ -24,6 +25,13 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     user = assigns(:user)
     assert_not user.activated?
 
+    # user is not visible when unactivated
+    log_in_as(@activated_user)
+    get users_path
+    assert_select 'a[href=?]', user_path(@activated_user)
+    assert_select 'a[href=?]', user_path(user), count: 0
+    log_out_as(@activated_user)
+
     log_in_as(user) # before activation
     assert_not is_logged_in?
 
@@ -38,5 +46,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_template 'users/show'
     assert is_logged_in?
+    get users_path
+    assert_select 'a[href=?]', user_path(user)
   end
 end
