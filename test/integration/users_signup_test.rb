@@ -25,11 +25,14 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     user = assigns(:user)
     assert_not user.activated?
 
-    # user is not visible when unactivated
+    # Unactivated user is not visible and users/:id redirected to root
     log_in_as(@activated_user)
     get users_path
     assert_select 'a[href=?]', user_path(@activated_user)
     assert_select 'a[href=?]', user_path(user), count: 0
+    get user_path(user)
+    follow_redirect!
+    assert_template 'static_pages/home'
     log_out_as(@activated_user)
 
     log_in_as(user) # before activation
